@@ -1,0 +1,128 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release-bundled",
+      "displayName": "Release, bundled FAISS",
+      "description": "Release build with tests, tools, and the bundled CPU FAISS provider.",
+      "binaryDir": "${sourceDir}/build/presets/release-bundled",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "LEARNEDHASH_BUILD_TESTS": "ON",
+        "LEARNEDHASH_BUILD_TOOLS": "ON",
+        "LEARNEDHASH_FAISS_PROVIDER": "bundled"
+      }
+    },
+    {
+      "name": "release-libonly",
+      "displayName": "Release, library-only",
+      "description": "Release build with tests and first-party libraries, excluding command-line tools.",
+      "inherits": "release-bundled",
+      "binaryDir": "${sourceDir}/build/presets/release-libonly",
+      "cacheVariables": {
+        "LEARNEDHASH_BUILD_TOOLS": "OFF"
+      }
+    },
+    {
+      "name": "release-lean-runtime",
+      "displayName": "Release, lean runtime",
+      "description": "Release build without FAISS-backed Vortex training, selector, or evaluation components.",
+      "inherits": "release-bundled",
+      "binaryDir": "${sourceDir}/build/presets/release-lean-runtime",
+      "cacheVariables": {
+        "LEARNEDHASH_BUILD_TOOLS": "OFF",
+        "LEARNEDHASH_BUILD_VORTEX_FAISS_COMPONENTS": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release-bundled",
+      "displayName": "Build Release, bundled FAISS",
+      "configurePreset": "release-bundled",
+      "configuration": "Release"
+    },
+    {
+      "name": "release-bundled-install-export",
+      "displayName": "Check install/export, bundled FAISS",
+      "configurePreset": "release-bundled",
+      "configuration": "Release",
+      "targets": [
+        "learnedhash_check_install_export"
+      ]
+    },
+    {
+      "name": "release-libonly",
+      "displayName": "Build Release, library-only",
+      "configurePreset": "release-libonly",
+      "configuration": "Release"
+    },
+    {
+      "name": "release-libonly-install-export",
+      "displayName": "Check install/export, library-only",
+      "configurePreset": "release-libonly",
+      "configuration": "Release",
+      "targets": [
+        "learnedhash_check_install_export"
+      ]
+    },
+    {
+      "name": "release-lean-runtime",
+      "displayName": "Build Release, lean runtime",
+      "configurePreset": "release-lean-runtime",
+      "configuration": "Release"
+    },
+    {
+      "name": "release-lean-runtime-install-export",
+      "displayName": "Check install/export, lean runtime",
+      "configurePreset": "release-lean-runtime",
+      "configuration": "Release",
+      "targets": [
+        "learnedhash_check_install_export"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "release-bundled",
+      "displayName": "Test Release, bundled FAISS",
+      "configurePreset": "release-bundled",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      }
+    },
+    {
+      "name": "release-libonly",
+      "displayName": "Test Release, library-only",
+      "configurePreset": "release-libonly",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      }
+    },
+    {
+      "name": "release-lean-runtime",
+      "displayName": "Test Release, lean runtime",
+      "configurePreset": "release-lean-runtime",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 8
+      }
+    }
+  ]
+}

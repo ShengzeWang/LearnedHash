@@ -1,0 +1,24 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+if (APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT OpenMP_CXX_FLAGS)
+  foreach(_faiss_omp_prefix "/opt/homebrew/opt/libomp" "/usr/local/opt/libomp")
+    if (EXISTS "${_faiss_omp_prefix}/include/omp.h" AND
+        EXISTS "${_faiss_omp_prefix}/lib/libomp.dylib")
+      set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I${_faiss_omp_prefix}/include"
+          CACHE STRING "OpenMP C flags" FORCE)
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I${_faiss_omp_prefix}/include"
+          CACHE STRING "OpenMP CXX flags" FORCE)
+      set(OpenMP_C_LIB_NAMES "omp" CACHE STRING "OpenMP C libraries" FORCE)
+      set(OpenMP_CXX_LIB_NAMES "omp" CACHE STRING "OpenMP CXX libraries" FORCE)
+      set(OpenMP_omp_LIBRARY "${_faiss_omp_prefix}/lib/libomp.dylib"
+          CACHE FILEPATH "OpenMP runtime library" FORCE)
+      break()
+    endif()
+  endforeach()
+endif()
+
+find_dependency(OpenMP)
+
+include("${CMAKE_CURRENT_LIST_DIR}/faiss-targets.cmake")
